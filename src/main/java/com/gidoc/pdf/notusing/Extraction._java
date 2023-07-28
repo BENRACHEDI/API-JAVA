@@ -1,0 +1,172 @@
+package com.gidoc.pdf;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.tools.imageio.ImageIOUtil;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import net.sourceforge.tess4j.ITesseract;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+/******************************************************/
+@RestController
+@RequestMapping("/pdf2")
+public class Extraction {
+    
+    @RequestMapping("/addModelXml")
+    public static void addModelXml(@RequestBody List<Zone> jsonData) throws JAXBException {  
+    //String filePath = "C:/Users/SIDO/Desktop/out/output.xml";
+    String pathModel = "C:/Users/SIDO/Desktop/filemanager5/src/assets/xmlModel/Modele.xml";
+   
+    ZoneList zoneList = new ZoneList();
+    zoneList.setZoneList(jsonData);
+
+    JAXBContext jaxbContext = JAXBContext.newInstance(ZoneList.class);
+    Marshaller marshaller = jaxbContext.createMarshaller();
+    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+    marshaller.marshal(zoneList, System.out);
+    marshaller.marshal(zoneList, new File(pathModel));
+
+   }
+
+   @RequestMapping("/extractionXml")
+   public static String extractionXml(@RequestBody DataPath dataPath) throws JAXBException, IOException, TesseractException {  
+    String pathModele = dataPath.getPathModel();
+    String pathPdf = dataPath.getPathPdf();
+  
+    JAXBContext jaxbContext = JAXBContext.newInstance(ZoneList.class);
+    Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+    ZoneList zoneList = (ZoneList) unmarshaller.unmarshal(new File(pathModele));
+    String outFolderFile = "C:/Users/SIDO/Desktop/filemanager5/src/assets/img/";
+
+
+    String directoryPath = "C:/Users/SIDO/Desktop/filemanager5/src/assets/pdfTest/";
+    File directory = new File(directoryPath);
+     if (directory.exists() && directory.isDirectory()) {
+            File[] files = directory.listFiles();
+
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile() && file.getName().endsWith(".pdf")) {
+                        String fileName = file.getName();
+                        String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
+                        System.out.println("\n****************************************");
+                        String path_pdf = directoryPath+file.getName();
+
+               // PDDocument doc = PDDocument.load(new File(path_pdf));    
+                TextpdfList textpdfList = new TextpdfList();
+
+                for(Zone zone: zoneList.zoneList){
+                        PDDocument doc = PDDocument.load(new File(path_pdf));  
+                        //Cropped image and save it.
+                        String z = zone.getzone(); int p = zone.getp();
+                        int x = zone.getx(); int yy = zone.gety();
+                        int w = zone.getw(); int h = zone.geth();  
+                        PDPage page = doc.getPage(p);
+                        float height =  page.getCropBox().getHeight(); 
+                        float y = (height - yy) - h;
+                        System.out.print(" p = "+p);
+                        System.out.print(" x = "+x);
+                        System.out.print(" y = "+y);
+                        System.out.print(" w = "+w);
+                        System.out.print(" h = "+h+"  |  ");
+                        page.setCropBox(new PDRectangle(x, y, w, h));
+                        PDFRenderer renderer = new PDFRenderer(doc);
+                        BufferedImage img = renderer.renderImage(p, 4f);
+                        ImageIOUtil.writeImage(img, new File(outFolderFile, "imgCropped.jpg").getAbsolutePath(), 100);
+                        
+                        //Get extract text from image save it.
+                        ITesseract tesseract = new Tesseract();
+                        tesseract.setTessVariable("user_defined_dpi", "72");
+                        tesseract.setDatapath("C:/Users/SIDO/Desktop/pdf/src/main/resources/tessdata"); 
+                        String extractedText =  tesseract.doOCR(new File(outFolderFile, "imgCropped.jpg")) ;
+                        //Textpdf textpdf = new Textpdf(z, extractedText);
+                        textpdfList.textpdf.add(new Textpdf(z, extractedText));             
+                        doc.close();    
+                }      
+               // numDoc +=1;
+                String filePathOut = "C:/Users/SIDO/Desktop/filemanager5/src/assets/xmlOut/"+fileNameWithoutExtension+".xml";   
+                JAXBContext jaxbContext2 = JAXBContext.newInstance(TextpdfList.class);
+                Marshaller marshaller2 = jaxbContext2.createMarshaller();
+                marshaller2.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+                //marshaller2.marshal(textpdfList, System.out);
+                marshaller2.marshal(textpdfList, new File(filePathOut));  
+                //doc.close(); 
+              
+                      }
+                }
+            }
+        } else {
+            System.out.println("Invalid directory path");
+        }
+
+ return  "Terminer";
+}
+
+
+    private static final String UPLOAD_DIR = "C:/Users/SIDO/Desktop/myUpload/";
+
+    @PostMapping("/upload")
+    public List<String> uploadFiles(@RequestBody List<MultipartFile> files) {
+        List<String> uploadedFiles = new ArrayList<>();
+
+        System.out.println("*************************************");
+        System.out.println(files);
+        System.out.println("*************************************");
+
+        for (MultipartFile file : files) {
+            String fileName = file.getOriginalFilename();
+            String filePath = UPLOAD_DIR + fileName;
+
+            try {
+                // Save the file to the specified directory
+                Path targetPath = Path.of(filePath);
+                Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+
+                uploadedFiles.add(fileName);
+            } catch (IOException e) {
+                // Handle the exception appropriately
+                e.printStackTrace();
+            }
+        }
+
+        return uploadedFiles;
+    }
+ 
+}
+
+

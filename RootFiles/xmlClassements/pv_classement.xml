@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RegleClassement>
+    <nomClassement>pv_classement</nomClassement>
+    <nomModel>proces-verbal.xml</nomModel>
+    <Classement id="3">
+        <nomZone>nom</nomZone>
+    </Classement>
+    <Classement id="2">
+        <nomZone>affectation</nomZone>
+    </Classement>
+    <Classement id="1">
+        <nomZone>date</nomZone>
+    </Classement>
+</RegleClassement>

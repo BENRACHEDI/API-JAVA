@@ -1,0 +1,39 @@
+package com.gidoc.pdf.model;
+
+
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "Modele")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class XmlModel {
+
+    @XmlElement(name = "zone") 
+    private ZoneList zoneList;
+    private String nomModel;
+
+    public XmlModel(ZoneList zoneList, String nomModel) {
+        this.zoneList = zoneList;
+        this.nomModel = nomModel;
+    }
+
+    // Getters et Setters
+    public ZoneList getZoneList() {
+        return zoneList;
+    }
+
+    public void setZoneList(ZoneList zoneList) {
+        this.zoneList = zoneList;
+    }
+
+    public String getNomModel() {
+        return nomModel;
+    }
+
+    public void setNomModel(String nomModel) {
+        this.nomModel = nomModel;
+    }
+    
+}

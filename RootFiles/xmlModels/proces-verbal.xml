@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Zone>
+    <Rectangle nomZone="date">
+        <p>0</p>
+        <x>136</x>
+        <y>409</y>
+        <w>87</w>
+        <h>24</h>
+    </Rectangle>
+    <Rectangle nomZone="affectation">
+        <p>0</p>
+        <x>154</x>
+        <y>465</y>
+        <w>213</w>
+        <h>29</h>
+    </Rectangle>
+    <Rectangle nomZone="nom">
+        <p>0</p>
+        <x>198</x>
+        <y>376</y>
+        <w>105</w>
+        <h>28</h>
+    </Rectangle>
+    <nomModel>proces-verbal</nomModel>
+</Zone>
