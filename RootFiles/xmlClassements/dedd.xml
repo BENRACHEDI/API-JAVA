@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RegleClassement>
+    <nomClassement>dedd</nomClassement>
+    <nomModel>model000.xml</nomModel>
+    <Classement id="1">
+        <nomZone>titree</nomZone>
+    </Classement>
+</RegleClassement>
