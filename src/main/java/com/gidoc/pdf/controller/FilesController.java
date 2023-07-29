@@ -410,7 +410,7 @@ public class FilesController {
     ZoneList zoneList = (ZoneList) unmarshaller.unmarshal(new File(pathModele));
 
     List<EZoneList> ezoneList = new ArrayList<>();
-/*    File directory = new File(pathUpload);
+    File directory = new File(pathUpload);
      if (directory.exists() && directory.isDirectory()) {
             File[] files = directory.listFiles();
             if (files != null) {
@@ -435,21 +435,21 @@ public class FilesController {
                         ImageIOUtil.writeImage(img, new File(imgCropped, "imgCropped.jpg").getAbsolutePath(), 100);
                         
                         //Get extract text from image save it.
-                        ITesseract tesseract = new Tesseract();
+/*                        ITesseract tesseract = new Tesseract();
                         tesseract.setTessVariable("user_defined_dpi", "72");
                         tesseract.setDatapath(tessdataPath); 
                         String extractedText =  tesseract.doOCR(new File(imgCropped, "imgCropped.jpg"));
                         ezone.add(new EZone(z, extractedText, p, x, yy, w, h));
-                        doc.close();  
+ */                       doc.close();  
                       }   
-                      ezoneList.add(new EZoneList(ezone, nomModel, fileName));
+  //                    ezoneList.add(new EZoneList(ezone, nomModel, fileName));
                     }
                 }
             } 
         } else {
             System.out.println("Invalid directory path");
         }
-   */     
+      
  return ResponseEntity.status(HttpStatus.OK).body(ezoneList);    
 }
 
