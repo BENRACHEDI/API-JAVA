@@ -410,7 +410,7 @@ public class FilesController {
     ZoneList zoneList = (ZoneList) unmarshaller.unmarshal(new File(pathModele));
 
     List<EZoneList> ezoneList = new ArrayList<>();
-    File directory = new File(pathUpload);
+/*    File directory = new File(pathUpload);
      if (directory.exists() && directory.isDirectory()) {
             File[] files = directory.listFiles();
             if (files != null) {
@@ -449,6 +449,7 @@ public class FilesController {
         } else {
             System.out.println("Invalid directory path");
         }
+   */     
  return ResponseEntity.status(HttpStatus.OK).body(ezoneList);    
 }
 
