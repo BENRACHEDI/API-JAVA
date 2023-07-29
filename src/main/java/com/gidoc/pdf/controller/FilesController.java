@@ -403,7 +403,7 @@ public class FilesController {
     String pathUpload= Paths.get("RootFiles/uploads/").toString().replace("\\", "/")+"/";
    
     String imgCropped = Paths.get("RootFiles/imgTemp/").toString().replace("\\", "/")+"/";
-    String tessdataPath = Paths.get("src/main/resources/tessdata/").toString().replace("\\", "/")+"/"; 
+    String tessdataPath = Paths.get("RootFiles/tessdata/").toString().replace("\\", "/")+"/"; 
 
     JAXBContext jaxbContext = JAXBContext.newInstance(ZoneList.class);
     Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
