@@ -438,8 +438,8 @@ public class FilesController {
                         ITesseract tesseract = new Tesseract();
                         tesseract.setTessVariable("user_defined_dpi", "72");
                         tesseract.setDatapath(tessdataPath); 
-/*                        String extractedText =  tesseract.doOCR(new File(imgCropped, "imgCropped.jpg"));
-                        ezone.add(new EZone(z, extractedText, p, x, yy, w, h));
+                        String extractedText =  tesseract.doOCR(new File(imgCropped, "imgCropped.jpg"));
+ /*                       ezone.add(new EZone(z, extractedText, p, x, yy, w, h));
  */                       doc.close();  
                       }   
   //                    ezoneList.add(new EZoneList(ezone, nomModel, fileName));
